@@ -1,12 +1,14 @@
 package com.me.audiovisual.business.home;
 
 import com.me.audiovisual.R;
+import com.me.audiovisual.arch.dagger2.DaggerComponents;
 import com.me.audiovisual.arch.presenter.BasicPresenterFragment;
 
 public class HomeFragment extends BasicPresenterFragment<HomeDelegate> implements IHomeContract.Presenter {
+
     @Override
-    protected Class<HomeDelegate> getVuClasss() {
-        return HomeDelegate.class;
+    protected void injectDependence() {
+        DaggerComponents.builder().build().inject(this);
     }
 
     @Override

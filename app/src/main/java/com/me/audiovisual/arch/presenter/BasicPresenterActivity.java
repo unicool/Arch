@@ -7,6 +7,8 @@ import android.view.Menu;
 
 import com.me.audiovisual.arch.view.IDelegate;
 
+import javax.inject.Inject;
+
 /**
  * Presenter base class for Activity
  * Presenter层的实现基类
@@ -15,31 +17,26 @@ import com.me.audiovisual.arch.view.IDelegate;
  */
 public abstract class BasicPresenterActivity<T extends IDelegate> extends AppCompatActivity {
 
+    @Inject
     protected T mViewDelegate;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
-            mViewDelegate = getDelegateClasss().newInstance();
-            mViewDelegate.create(getLayoutInflater(), null, savedInstanceState);
-            setContentView(mViewDelegate.getRootView());
-            mViewDelegate.initWidget();
-            onBindDelegate();
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
-        }
+        injectDependence();
+        mViewDelegate.create(getLayoutInflater(), null, savedInstanceState);
+        setContentView(mViewDelegate.getRootView());
+        mViewDelegate.initWidget();
+        onBindDelegate();
     }
 
-    protected abstract Class<T> getDelegateClasss();
+    protected abstract void injectDependence();
 
     protected abstract void onBindDelegate();
 
     @Override
     protected final void onDestroy() {
         onUnbindDelegate();
-        mViewDelegate = null;
         super.onDestroy();
     }
 
